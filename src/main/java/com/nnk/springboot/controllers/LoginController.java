@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("app")
 public class LoginController {
-
+/*
     @Autowired
     private UserRepository userRepository;
 
@@ -37,4 +37,6 @@ public class LoginController {
         mav.setViewName("403");
         return mav;
     }
+
+ */
 }
