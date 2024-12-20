@@ -6,6 +6,12 @@
 <title>Home</title>
 <link rel="stylesheet" href="../../css/bootstrap.min.css" >
 </head>
+Logged in user:  <b class="user" th:text="${#authentication.principal.id}"></b>
+
+<div id="userId" th:data-user-id="${#authentication.principal.id}"></div>
+Logged in user:  <b class="user" th:text="${#authentication.principal.id}"></b>
+
+
 <body>
 <div class="container">
 

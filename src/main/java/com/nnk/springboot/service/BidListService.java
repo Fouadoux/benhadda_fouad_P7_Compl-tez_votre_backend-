@@ -7,12 +7,10 @@ import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.repositories.BidListRepository;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +25,10 @@ public class BidListService {
         this.bidListRepository = bidListRepository;
     }
 
+
+
     public BidDTO convertToDTO(BidList bidList){
-         log.info("Converting bid ID {} to DTO",bidList.getBid());
+         log.info("Converting bid  to DTO");
 
          BidDTO dto=new BidDTO();
          dto.setId(bidList.getId());
@@ -47,15 +47,19 @@ public class BidListService {
                 .collect(Collectors.toList());
     }
 
-    public List<BidList> getListToBigList(){
+    public List<BidList> getAllBidList(){
         return bidListRepository.findAll();
     }
 
+    public BidDTO getBidDTOById(int id){
+        BidList bidList = bidListRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Bid list with id " + id + " not found"));
+        return convertToDTO(bidList);
+
+    }
     public void addBidList(BidDTO bidDTO) {
         log.info("Adding a new bid to the bid list");
-
-        validateBidDTO(bidDTO);
-
 
         BidList bidList = new BidList();
 
@@ -68,23 +72,16 @@ public class BidListService {
             log.info("BidList added successfully");
         } catch (EntitySaveException e) {
             log.error("Failed to save bid", e);
-            throw new EntitySaveException("Failed to create user.");
+            throw new EntitySaveException("Failed to create bid.");
         }
 
     }
 
-    public BidDTO getBidbyID(int id){
-        BidList bidList = bidListRepository.findById(id)
-                .orElseThrow(() ->
-                    new EntityNotFoundException("Default role 'USER' not found"));
-        return convertToDTO(bidList);
 
-    }
 
     public void updateBidList(int id, BidDTO bidDTO) {
         log.info("Updating bid with ID: {}", id);
 
-        validateBidDTO(bidDTO);
 
         BidList bidList = bidListRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("BidList not found with Id: " + id));
@@ -118,20 +115,6 @@ public class BidListService {
             throw new EntityDeleteException("Failed to delete bid with ID " + id, e);
         }
     }
-
-    private void validateBidDTO(BidDTO bidDTO) {
-        if (StringUtils.isBlank(bidDTO.getAccount())) {
-            throw new IllegalArgumentException("Account cannot be null or empty");
-        }
-        if (StringUtils.isBlank(bidDTO.getType())) {
-            throw new IllegalArgumentException("Type cannot be null or empty");
-        }
-        if (bidDTO.getBidQuantity() == null || bidDTO.getBidQuantity() < 0) {
-            throw new IllegalArgumentException("Bid quantity must be positive and non-null");
-        }
-    }
-
-
 
 
 }

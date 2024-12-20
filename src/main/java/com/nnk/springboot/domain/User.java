@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -16,28 +18,34 @@ import java.util.List;
 @NoArgsConstructor
 public class User implements UserDetails {
 
+    /*@Transient
+    private Collection<? extends GrantedAuthority> authorities;*/
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Correspond à AUTO_INCREMENT dans MySQL
     private int id;
 
-    @NotBlank(message = "Username is mandatory")
     @Column(name = "username", length = 125)
     private String username;
 
-    @NotBlank(message = "Password is mandatory")
     @Column(name = "password", length = 125)
     private String password;
 
-    @NotBlank(message = "FullName is mandatory")
     @Column(name = "fullname", length = 125)
     private String fullName;
 
-    @NotBlank(message = "Role is mandatory")
     @Column(name = "role", length = 125)
     private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role)); // this.role doit inclure "ROLE_ADMIN"
     }
+
+    /*@Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }*/
+
+
 }

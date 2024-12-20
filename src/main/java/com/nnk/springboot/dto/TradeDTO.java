@@ -1,14 +1,15 @@
 package com.nnk.springboot.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class BidDTO {
+public class TradeDTO {
 
-    private Byte id;
+    private int id;
 
     @NotBlank(message = "Account is mandatory")
     private String account;
@@ -16,7 +17,7 @@ public class BidDTO {
     @NotBlank(message = "Type is mandatory")
     private String type;
 
-    @NotNull(message = "Bid quantity is mandatory")
-    @Positive(message = "Bid quantity must be positive")
-    private Double bidQuantity;
+    @NotNull(message = "Buy Quantity is mandatory")
+    @Positive(message = "Buy Quantity must be positive")
+    private Double buyQuantity;
 }
