@@ -2,13 +2,11 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.dto.UserDTO;
-import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +46,7 @@ public class UserController {
             return "user/add";
         }
         try{
-            userService.addUser(user);
+            userService.saveUser(user);
             redirectAttributes.addFlashAttribute("successMessage", "User added successfully");
             return "redirect:/user/list";
         }catch(Exception e){

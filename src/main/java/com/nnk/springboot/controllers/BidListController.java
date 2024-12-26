@@ -4,12 +4,9 @@ import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.dto.BidDTO;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.service.BidListService;
-import com.nnk.springboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,17 +26,6 @@ public class BidListController {
     }
 
 
-    @GetMapping("/test")
-    @ResponseBody
-    public String test(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-        System.out.println("Principal class: " + principal.getClass().getName());
-        return "Principal class: " + principal.getClass().getName();
-    }
-
-
-
-    //@PreAuthorize("#userId == principal.id")
     @GetMapping("/bidList/list")
     public String home(Model model)
     {
@@ -49,14 +35,12 @@ public class BidListController {
         return "bidList/list";
     }
 
-   // @PreAuthorize("#userId == principal.id")
     @GetMapping("/bidList/add")
     public String addBidForm(Model model) {
         model.addAttribute("bid", new BidDTO());
         return "bidList/add";
     }
 
-    //@PreAuthorize("#userId == principal.id")
     @PostMapping("/bidList/validate")
     public String validate(@Valid @ModelAttribute("bid") BidDTO bid, BindingResult result, Model model,
                            RedirectAttributes redirectAttributes) {
@@ -66,7 +50,7 @@ public class BidListController {
         }
 
         try {
-            bidListService.addBidList(bid);
+            bidListService.saveBidList(bid);
             redirectAttributes.addFlashAttribute("successMessage", "Bid successfully added");
 
             return "redirect:/bidList/list";
@@ -78,7 +62,6 @@ public class BidListController {
     }
 
 
-   // @PreAuthorize("#userId == principal.id")
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Bid by Id and to model then show to the form

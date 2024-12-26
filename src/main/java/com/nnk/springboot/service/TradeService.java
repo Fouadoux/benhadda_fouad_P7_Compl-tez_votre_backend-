@@ -7,6 +7,7 @@ import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.repositories.TradeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,6 @@ public class TradeService {
     public TradeService(TradeRepository tradeRepository) {
         this.tradeRepository = tradeRepository;
     }
-
 
 
     public TradeDTO convertToDTO(Trade trade){
@@ -49,25 +49,13 @@ public class TradeService {
         return tradeRepository.findAll();
     }
 
-    public void addTrade(TradeDTO tradeDTO) {
-        log.info("Adding a new trade to the bid list");
-
-        Trade trade = new Trade();
-        trade.setAccount(tradeDTO.getAccount());
-        trade.setType(tradeDTO.getType());
-        trade.setBuyQuantity(tradeDTO.getBuyQuantity());
-
-        try {
-            tradeRepository.save(trade);
-            log.info("Trade added successfully");
-        } catch (EntitySaveException e) {
-            log.error("Failed to save trade", e);
-            throw new EntitySaveException("Failed to create trade.");
-        }
-
-    }
-
     public TradeDTO getTradeDTOById(int id){
+        log.info("Fetching trade with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID.");
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
         Trade trade = tradeRepository.findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException("Trade with id " + id + " not found"));
@@ -75,22 +63,51 @@ public class TradeService {
 
     }
 
-    public void updateBidList(int id, TradeDTO tradeDTO) {
+    public Trade saveTrade(TradeDTO tradeDTO) {
+        log.info("Adding a new trade to the bid list");
+
+        if (tradeDTO == null) {
+            log.error("Trade is null, cannot save.");
+            throw new IllegalArgumentException("BidDTO cannot be null.");
+        }
+
+        Trade trade = new Trade();
+        trade.setAccount(tradeDTO.getAccount());
+        trade.setType(tradeDTO.getType());
+        trade.setBuyQuantity(tradeDTO.getBuyQuantity());
+
+        try {
+            Trade result=tradeRepository.save(trade);
+            log.info("Trade added successfully");
+            return result;
+        } catch (DataAccessException e) {
+            log.error("Failed to save trade", e);
+            throw new EntitySaveException("Failed to create trade.");
+        }
+
+    }
+
+    public Trade updateBidList(int id, TradeDTO tradeDTO) {
         log.info("Updating bid with ID: {}", id);
 
+        if (tradeDTO == null) {
+            log.error("Trade is null, cannot save.");
+            throw new IllegalArgumentException("BidDTO cannot be null.");
+        }
 
         Trade trade = tradeRepository.findById(id)
                 .orElseThrow(() ->
                         new EntityNotFoundException("Trade with id " + id + " not found"));
 
         trade.setAccount(tradeDTO.getAccount());
-        trade.setTradeId(tradeDTO.getId());
         trade.setBuyQuantity(tradeDTO.getBuyQuantity());
+        trade.setType(tradeDTO.getType());
 
         try {
-            tradeRepository.save(trade);
+            Trade result= tradeRepository.save(trade);
             log.info("Trade with ID {} updated successfully", id);
-        } catch (Exception e) {
+            return result;
+        } catch (DataAccessException e) {
             log.error("Failed to update trade with ID {}", id, e);
             throw new EntitySaveException("Failed to update trade with ID " + id, e);
         }
@@ -98,6 +115,11 @@ public class TradeService {
 
     public void deleteTrade(int id) {
         log.info("Delete trade with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID: {}", id);
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
 
         if (!tradeRepository.existsById(id)) {
             log.error("Trade with ID {} not found", id);
@@ -107,7 +129,7 @@ public class TradeService {
         try {
             tradeRepository.deleteById(id);
             log.info("Trade with ID {} deleted successfully", id);
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             log.error("Failed to delete trade with ID {}", id, e);
             throw new EntityDeleteException("Failed to delete trade with ID " + id, e);
         }

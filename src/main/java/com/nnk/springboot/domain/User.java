@@ -37,15 +37,10 @@ public class User implements UserDetails {
     @Column(name = "role", length = 125)
     private String role;
 
+    private String githubId; // ID unique de GitHub
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(this.role)); // this.role doit inclure "ROLE_ADMIN"
     }
-
-    /*@Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }*/
-
-
 }

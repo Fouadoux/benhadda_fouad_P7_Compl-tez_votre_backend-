@@ -13,7 +13,7 @@ public class CurveDTO {
 
 
     @NotNull(message="Must not be null")
-  //  @UniqueValue(entityClass = CurvePoint.class, columnName = "curveId", message = "Ce CurveId est déjà utilisé")
+    @UniqueValue(entityClass = CurvePoint.class, columnName = "curveId", message = "Ce CurveId est déjà utilisé")
     @Positive(message = "Id must be positive")
     private Integer curveId;
 

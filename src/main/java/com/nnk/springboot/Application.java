@@ -9,11 +9,11 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		/*BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		String rawPassword = "password123";
 		String hashedPassword = encoder.encode(rawPassword);
 		System.out.println("Haché : " + hashedPassword);
-*/
+
 
 		SpringApplication.run(Application.class, args);
 	}

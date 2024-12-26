@@ -3,7 +3,6 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.dto.RatingDTO;
 import com.nnk.springboot.exception.EntitySaveException;
-import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.service.RatingService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class RatingController {
     public String home(Model model)
     {
         // TODO: find all Rating, add to model
-        List<Rating> ratings = ratingService.getListToRaitingList();
+        List<Rating> ratings = ratingService.getAllRatings();
         List<RatingDTO> ratingDTOList = ratingService.convertToDTOList(ratings);
         model.addAttribute("ratings", ratingDTOList);
         return "rating/list";
@@ -55,7 +54,7 @@ public class RatingController {
 
         try{
             log.info("successfully added rating {}", rating);
-            ratingService.addRating(rating);
+            ratingService.saveRating(rating);
             redirectAttributes.addFlashAttribute("successMessage", "Rating successfully added");
 
             return "redirect:/rating/list";

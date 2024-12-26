@@ -6,8 +6,8 @@ import com.nnk.springboot.exception.EntityDeleteException;
 import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.repositories.RuleNameRepository;
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,27 +22,6 @@ public class RuleNameService {
 
     public RuleNameService(RuleNameRepository ruleNameRepository) {
         this.ruleNameRepository = ruleNameRepository;
-    }
-
-    private void validateRuleDTO(RuleNameDTO ruleNameDTO) {
-        if (StringUtils.isBlank(ruleNameDTO.getName())) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ruleNameDTO.getDescription())) {
-            throw new IllegalArgumentException("Description cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ruleNameDTO.getJson())) {
-            throw new IllegalArgumentException("Json cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ruleNameDTO.getTemplate())) {
-            throw new IllegalArgumentException("Template cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ruleNameDTO.getSql())) {
-            throw new IllegalArgumentException("Sql cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ruleNameDTO.getSqlPart())) {
-            throw new IllegalArgumentException("SqlPart cannot be null or empty");
-        }
     }
 
     public RuleNameDTO convertToDTO(RuleName ruleName){
@@ -68,15 +47,27 @@ public class RuleNameService {
                 .collect(Collectors.toList());
     }
 
-    public List<RuleName> getListToBigList(){
+    public List<RuleName> getAllRuleName(){
         return ruleNameRepository.findAll();
     }
 
-    @Transactional
-    public void addRuleName(RuleNameDTO ruleNameDTO) {
-        log.info("Adding a new bid to the bid list");
+    public RuleNameDTO getRuleNameDTOById(int id){
+        log.info("Fetching BidDTO with ID: {}", id);
 
-        validateRuleDTO(ruleNameDTO);
+        if (id <= 0) {
+            log.error("Invalid ID.");
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
+
+        RuleName ruleName = ruleNameRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Rule with id " + id + " not found"));
+        return convertToDTO(ruleName);
+    }
+
+    @Transactional
+    public RuleName saveRuleName(RuleNameDTO ruleNameDTO) {
+        log.info("Adding a new bid to the bid list");
 
         RuleName ruleName = new RuleName();
 
@@ -88,26 +79,18 @@ public class RuleNameService {
         ruleName.setSqlPart(ruleNameDTO.getSqlPart());
 
         try {
-            ruleNameRepository.save(ruleName);
+           RuleName saveRule= ruleNameRepository.save(ruleName);
             log.info("Rule added successfully");
-        } catch (EntitySaveException e) {
+            return saveRule;
+        } catch (DataAccessException e) {
             log.error("Failed to save rule", e);
             throw new EntitySaveException("Failed to create rule.");
         }
 
     }
 
-    public RuleNameDTO getRuleNameDTOById(int id){
-        RuleName ruleName = ruleNameRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Rule with id " + id + " not found"));
-        return convertToDTO(ruleName);
-    }
-
-    public void updateRuleName(int id, RuleNameDTO ruleNameDTO) {
+    public RuleName updateRuleName(int id, RuleNameDTO ruleNameDTO) {
         log.info("Updating bid with ID: {}", id);
-
-        validateRuleDTO(ruleNameDTO);
 
         RuleName ruleName = ruleNameRepository.findById(id)
                 .orElseThrow(() ->
@@ -121,8 +104,9 @@ public class RuleNameService {
         ruleName.setSqlPart(ruleNameDTO.getSqlPart());
 
         try {
-            ruleNameRepository.save(ruleName);
+            RuleName saveRule= ruleNameRepository.save(ruleName);
             log.info("Rule with ID {} updated successfully", id);
+            return saveRule;
         } catch (Exception e) {
             log.error("Failed to update rule with ID {}", id, e);
             throw new EntitySaveException("Failed to update rule with ID " + id, e);
@@ -131,6 +115,11 @@ public class RuleNameService {
 
     public void delteRuleNameById(int id) {
         log.info("Delete bid with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID.");
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
 
         if (!ruleNameRepository.existsById(id)) {
             log.error("Rule with ID {} not found", id);

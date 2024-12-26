@@ -1,5 +1,6 @@
 package com.nnk.springboot.domain;
 
+import com.nnk.springboot.validation.annotation.UniqueValue;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class CurvePoint {
     @Column(name = "Id", nullable = false)
     private Long id;
 
-    @Column(name = "CurveId")
+    @Column(name = "CurveId", unique = true)
     private Integer curveId;
 
     @Column(name = "asOfDate")

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register with GitHub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .github-btn {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .github-btn:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Sign Up</h1>
+    <p>Create your account by connecting your GitHub account.</p>
+    <a class="github-btn" th:href="@{/oauth2/authorization/github}">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" style="height: 20px; vertical-align: middle; margin-right: 10px;">
+        Sign Up with GitHub
+    </a>
+</div>
+</body>
+</html>

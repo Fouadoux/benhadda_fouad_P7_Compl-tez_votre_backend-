@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -30,7 +29,7 @@ public class CurveController {
     public String home(Model model)
     {
         // TODO: find all Curve Point, add to model
-        List<CurvePoint> curvePointList=curveService.getCurvePointList();
+        List<CurvePoint> curvePointList=curveService.getAllCurvePoint();
         List<CurveDTO> curveDTOList=curveService.convertToDtoList(curvePointList);
         model.addAttribute("curvePoints",curveDTOList);
 
@@ -53,7 +52,7 @@ public class CurveController {
         }
 
         try{
-            curveService.addCurvePoint(curveDTO);
+            curveService.saveCurvePoint(curveDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Curve successfully added");
 
             return "redirect:/curvePoint/list";

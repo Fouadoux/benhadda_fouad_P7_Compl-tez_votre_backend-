@@ -1,15 +1,13 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Rating;
-import com.nnk.springboot.dto.BidDTO;
 import com.nnk.springboot.dto.RatingDTO;
 import com.nnk.springboot.exception.EntityDeleteException;
 import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.repositories.RatingRepository;
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,20 +23,7 @@ public class RatingService {
         this.ratingRepository = ratingRepository;
     }
 
-    private void validateRatingDTO(RatingDTO ratingDTO) {
-        if (StringUtils.isBlank(ratingDTO.getMoodysRating())) {
-            throw new IllegalArgumentException("Moody rating cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ratingDTO.getSandPRating())) {
-            throw new IllegalArgumentException("SandPRating cannot be null or empty");
-        }
-        if (StringUtils.isBlank(ratingDTO.getFitchRating())) {
-            throw new IllegalArgumentException("SandPRating cannot be null or empty");
-        }
-        if (ratingDTO.getOrderNumber() == null || ratingDTO.getOrderNumber() < 0) {
-            throw new IllegalArgumentException("Bid quantity must be positive and non-null");
-        }
-    }
+
 
     public RatingDTO convertToDTO(Rating rating) {
         log.info("Converting bid ID {} to DTO", rating.getId());
@@ -60,15 +45,27 @@ public class RatingService {
                 .collect(Collectors.toList());
     }
 
-    public List<Rating> getListToRaitingList() {
+    public List<Rating> getAllRatings() {
         return ratingRepository.findAll();
     }
 
-    public void addRating(RatingDTO ratingDTO) {
+    public RatingDTO getRatingDTOById(int id){
+        log.info("Fetching rate with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID.");
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
+
+        Rating rating = ratingRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Rating with id " + id + " not found"));
+        return convertToDTO(rating);
+
+    }
+
+    public Rating saveRating(RatingDTO ratingDTO) {
         log.info("Adding a new bid to the bid list");
-
-        validateRatingDTO(ratingDTO);
-
 
         Rating rating = new Rating();
 
@@ -79,30 +76,28 @@ public class RatingService {
 
 
         try {
-            ratingRepository.save(rating);
+            Rating saveRate= ratingRepository.save(rating);
             log.info("Rating added successfully");
-        } catch (EntitySaveException e) {
+            return saveRate;
+        } catch (DataAccessException e) {
             log.error("Failed to save Rating", e);
             throw new EntitySaveException("Failed to create rating.");
         }
     }
 
-    public RatingDTO getRatingDTOById(int id){
-        Rating rating = ratingRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Rating with id " + id + " not found"));
-        return convertToDTO(rating);
 
-    }
 
-    public void updateRating(int id, RatingDTO ratingDTO) {
+    public Rating updateRating(int id, RatingDTO ratingDTO) {
         log.info("Updating bid with ID: {}", id);
 
-        validateRatingDTO(ratingDTO);
+        if (ratingDTO == null) {
+            log.error("BidDTO is null, cannot update.");
+            throw new IllegalArgumentException("BidDTO cannot be null.");
+        }
 
         Rating rating = ratingRepository.findById(id)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Rating with id " + id + " not found"));
+                        new EntityNotFoundException("Rate not found with Id: " +id));
 
         rating.setMoodysRating(ratingDTO.getMoodysRating());
         rating.setSandPRating(ratingDTO.getSandPRating());
@@ -110,9 +105,10 @@ public class RatingService {
         rating.setOrderNumber(ratingDTO.getOrderNumber());
 
         try {
-            ratingRepository.save(rating);
+            Rating saveRate=ratingRepository.save(rating);
             log.info("Rating with ID {} updated successfully", id);
-        } catch (Exception e) {
+            return saveRate;
+        } catch (DataAccessException e) {
             log.error("Failed to update rating with ID {}", id, e);
             throw new EntitySaveException("Failed to update rating with ID " + id, e);
         }
@@ -120,6 +116,11 @@ public class RatingService {
 
     public void deleteRating(int id) {
         log.info("Delete rating with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID: {}", id);
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
 
         if (!ratingRepository.existsById(id)) {
             log.error("Rating with ID {} not found", id);
@@ -129,7 +130,7 @@ public class RatingService {
         try {
             ratingRepository.deleteById(id);
             log.info("Rating with ID {} deleted successfully", id);
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             log.error("Failed to delete Rating with ID {}", id, e);
             throw new EntityDeleteException("Failed to delete Rating with ID " + id, e);
         }

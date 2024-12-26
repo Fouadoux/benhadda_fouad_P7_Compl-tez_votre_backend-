@@ -1,12 +1,8 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.RuleName;
-import com.nnk.springboot.dto.BidDTO;
-import com.nnk.springboot.dto.RatingDTO;
 import com.nnk.springboot.dto.RuleNameDTO;
 import com.nnk.springboot.exception.EntitySaveException;
-import com.nnk.springboot.repositories.RuleNameRepository;
 import com.nnk.springboot.service.RuleNameService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +26,7 @@ public class RuleNameController {
 
     @RequestMapping("/ruleName/list")
     public String home(Model model) {
-        List<RuleName> ruleNameList = ruleNameService.getListToBigList();
+        List<RuleName> ruleNameList = ruleNameService.getAllRuleName();
         List<RuleNameDTO> ratingDTOList = ruleNameService.convertToDTOList(ruleNameList);
         model.addAttribute("ruleNames", ratingDTOList);
         return "ruleName/list";
@@ -52,7 +48,7 @@ public class RuleNameController {
         }
         try {
             log.info("Validating ruleName {}", ruleName);
-            ruleNameService.addRuleName(ruleName);
+            ruleNameService.saveRuleName(ruleName);
             redirectAttributes.addFlashAttribute("successMessage", "Rule successfully added");
             return "redirect:/ruleName/list";
         } catch (IllegalArgumentException | EntitySaveException e) {

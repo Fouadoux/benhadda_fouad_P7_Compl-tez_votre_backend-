@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-
     private int id;
 
     @NotBlank(message = "Username is mandatory")
@@ -22,4 +21,5 @@ public class UserDTO {
     @NotBlank(message = "Role is mandatory")
     private String role;
 
+    private String githubId; // ID unique de GitHub
 }

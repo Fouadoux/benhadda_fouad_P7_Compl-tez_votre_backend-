@@ -2,8 +2,6 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.dto.TradeDTO;
-import com.nnk.springboot.exception.EntitySaveException;
-import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.service.TradeService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +47,7 @@ public class TradeController {
             return "trade/add";
         }
         try{
-            tradeService.addTrade(trade);
+            tradeService.saveTrade(trade);
             redirectAttributes.addFlashAttribute("successMessage", "Trade added successfully");
             return "redirect:/trade/list";
         }catch(Exception e){
