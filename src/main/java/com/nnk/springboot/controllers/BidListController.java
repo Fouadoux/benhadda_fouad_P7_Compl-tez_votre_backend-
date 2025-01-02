@@ -18,14 +18,24 @@ import java.util.List;
 @Slf4j
 @Controller
 public class BidListController {
-    // TODO: Inject Bid service
+
     private final BidListService bidListService;
 
+    /**
+     * Constructs a new instance of {@link BidListController}.
+     *
+     * @param bidListService the service for managing bid lists
+     */
     public BidListController(BidListService bidListService) {
         this.bidListService = bidListService;
     }
 
-
+    /**
+     * Displays the list of all bids.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the bid list page
+     */
     @GetMapping("/bidList/list")
     public String home(Model model)
     {
@@ -35,12 +45,27 @@ public class BidListController {
         return "bidList/list";
     }
 
+    /**
+     * Displays the form to add a new bid.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the add bid form
+     */
     @GetMapping("/bidList/add")
     public String addBidForm(Model model) {
         model.addAttribute("bid", new BidDTO());
         return "bidList/add";
     }
 
+    /**
+     * Validates and saves a new bid.
+     *
+     * @param bid                 the bid data transfer object to save
+     * @param result              the binding result for validation errors
+     * @param model               the model to pass attributes to the view
+     * @param redirectAttributes  the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/bidList/validate")
     public String validate(@Valid @ModelAttribute("bid") BidDTO bid, BindingResult result, Model model,
                            RedirectAttributes redirectAttributes) {
@@ -61,7 +86,13 @@ public class BidListController {
         }
     }
 
-
+    /**
+     * Displays the form to update an existing bid.
+     *
+     * @param id    the ID of the bid to update
+     * @param model the model to pass attributes to the view
+     * @return the view name for the update bid form
+     */
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Bid by Id and to model then show to the form
@@ -70,6 +101,16 @@ public class BidListController {
         return "bidList/update";
     }
 
+    /**
+     * Validates and updates an existing bid.
+     *
+     * @param id                 the ID of the bid to update
+     * @param bidDTO             the bid data transfer object with updated details
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id,
                             @Valid @ModelAttribute("bidList") BidDTO bidDTO,
@@ -99,6 +140,13 @@ public class BidListController {
         }
     }
 
+    /**
+     * Deletes a bid by its ID.
+     *
+     * @param id                 the ID of the bid to delete
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the redirect URL for the bid list page
+     */
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         bidListService.deleteBidList(id);
@@ -107,24 +155,4 @@ public class BidListController {
         return "redirect:/bidList/list";
     }
 
-
-
-
-
-
-  /*  @PostMapping("/bidList/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        try {
-            bidListService.deleteBidList(id);
-            return "redirect:/bidList/list";
-        } catch (EntityNotFoundException e) {
-            model.addAttribute("errorMessage", "BidList not found with ID: " + id);
-            return "redirect:/bidList/list";
-        } catch (EntityDeleteException e) {
-            model.addAttribute("errorMessage", "Failed to delete BidList with ID: " + id);
-            return "redirect:/bidList/list";
-        }
-    }
-
-   */
 }

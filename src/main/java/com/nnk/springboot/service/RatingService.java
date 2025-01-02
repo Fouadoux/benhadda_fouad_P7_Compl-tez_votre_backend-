@@ -19,12 +19,21 @@ public class RatingService {
 
     private final RatingRepository ratingRepository;
 
+    /**
+     * Constructs a new instance of {@link RatingService}.
+     *
+     * @param ratingRepository the repository for accessing rating data
+     */
     public RatingService(RatingRepository ratingRepository) {
         this.ratingRepository = ratingRepository;
     }
 
-
-
+    /**
+     * Converts a {@link Rating} entity to a {@link RatingDTO}.
+     *
+     * @param rating the rating entity to convert
+     * @return the converted {@link RatingDTO}
+     */
     public RatingDTO convertToDTO(Rating rating) {
         log.info("Converting bid ID {} to DTO", rating.getId());
 
@@ -37,6 +46,12 @@ public class RatingService {
         return dto;
     }
 
+    /**
+     * Converts a list of {@link Rating} entities to a list of {@link RatingDTO}s.
+     *
+     * @param ratingList the list of rating entities to convert
+     * @return the list of converted {@link RatingDTO}s
+     */
     public List<RatingDTO> convertToDTOList(List<Rating> ratingList) {
         log.info("Converting list of bid to DTOs");
 
@@ -45,10 +60,23 @@ public class RatingService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all ratings as a list.
+     *
+     * @return a list of all {@link Rating} entities
+     */
     public List<Rating> getAllRatings() {
         return ratingRepository.findAll();
     }
 
+    /**
+     * Retrieves a {@link RatingDTO} by its ID.
+     *
+     * @param id the ID of the rating to retrieve
+     * @return the retrieved {@link RatingDTO}
+     * @throws IllegalArgumentException  if the ID is invalid
+     * @throws EntityNotFoundException   if no rating is found with the given ID
+     */
     public RatingDTO getRatingDTOById(int id){
         log.info("Fetching rate with ID: {}", id);
 
@@ -64,6 +92,13 @@ public class RatingService {
 
     }
 
+    /**
+     * Saves a new rating based on a {@link RatingDTO}.
+     *
+     * @param ratingDTO the data transfer object containing rating details
+     * @return the saved {@link Rating} entity
+     * @throws EntitySaveException if saving the rating fails
+     */
     public Rating saveRating(RatingDTO ratingDTO) {
         log.info("Adding a new bid to the bid list");
 
@@ -85,8 +120,16 @@ public class RatingService {
         }
     }
 
-
-
+    /**
+     * Updates an existing rating based on its ID and a {@link RatingDTO}.
+     *
+     * @param id        the ID of the rating to update
+     * @param ratingDTO the data transfer object containing updated rating details
+     * @return the updated {@link Rating} entity
+     * @throws IllegalArgumentException  if the {@link RatingDTO} is null
+     * @throws EntityNotFoundException   if no rating is found with the given ID
+     * @throws EntitySaveException       if updating the rating fails
+     */
     public Rating updateRating(int id, RatingDTO ratingDTO) {
         log.info("Updating bid with ID: {}", id);
 
@@ -114,6 +157,14 @@ public class RatingService {
         }
     }
 
+    /**
+     * Deletes a rating by its ID.
+     *
+     * @param id the ID of the rating to delete
+     * @throws IllegalArgumentException   if the ID is invalid
+     * @throws EntityNotFoundException    if no rating is found with the given ID
+     * @throws EntityDeleteException      if deleting the rating fails
+     */
     public void deleteRating(int id) {
         log.info("Delete rating with ID: {}", id);
 

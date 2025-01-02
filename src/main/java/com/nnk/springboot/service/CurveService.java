@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +20,21 @@ public class CurveService {
 
     private final CurvePointRepository curvePointRepository;
 
+    /**
+     * Constructs a new instance of {@link CurveService}.
+     *
+     * @param curvePointRepository the repository for accessing curve point data
+     */
     public CurveService(CurvePointRepository curvePointRepository) {
         this.curvePointRepository = curvePointRepository;
     }
 
-
+    /**
+     * Converts a {@link CurvePoint} entity to a {@link CurveDTO}.
+     *
+     * @param curvePoint the curve point entity to convert
+     * @return the converted {@link CurveDTO}
+     */
     public CurveDTO convertToDTO(CurvePoint curvePoint) {
         log.info("Converting curve point {}", curvePoint);
 
@@ -36,6 +47,12 @@ public class CurveService {
         return curveDTO;
     }
 
+    /**
+     * Converts a list of {@link CurvePoint} entities to a list of {@link CurveDTO}s.
+     *
+     * @param curvePointList the list of curve point entities to convert
+     * @return the list of converted {@link CurveDTO}s
+     */
     public List<CurveDTO> convertToDtoList(List<CurvePoint> curvePointList) {
         log.info("Converting list of curve to DTO");
 
@@ -44,10 +61,23 @@ public class CurveService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all curve points as a list.
+     *
+     * @return a list of all {@link CurvePoint} entities
+     */
     public List<CurvePoint> getAllCurvePoint() {
         return curvePointRepository.findAll();
     }
 
+    /**
+     * Retrieves a {@link CurveDTO} by its ID.
+     *
+     * @param id the ID of the curve point to retrieve
+     * @return the retrieved {@link CurveDTO}
+     * @throws IllegalArgumentException  if the ID is invalid
+     * @throws EntityNotFoundException   if no curve point is found with the given ID
+     */
     public CurveDTO getCurveDTOById(int id) {
         log.info("Fetching curve point {}", id);
 
@@ -62,18 +92,27 @@ public class CurveService {
         return convertToDTO(curvePoint);
     }
 
+    /**
+     * Saves a new curve point based on a {@link CurveDTO}.
+     *
+     * @param curveDTO the data transfer object containing curve point details
+     * @return the saved {@link CurvePoint} entity
+     * @throws IllegalArgumentException  if the {@link CurveDTO} is null
+     * @throws EntitySaveException       if saving the curve point fails
+     */
     public CurvePoint saveCurvePoint(CurveDTO curveDTO) {
-        log.info("Saving a new curve into the bid list.");
+        log.info("Saving a new curve into the curve point {}", curveDTO);
 
         if (curveDTO == null) {
-            log.error("BidDTO is null, cannot save.");
-            throw new IllegalArgumentException("BidDTO cannot be null.");
+            log.error("Curve is null, cannot save.");
+            throw new IllegalArgumentException("Curve cannot be null.");
         }
 
         CurvePoint curvePoint = new CurvePoint();
         curvePoint.setCurveId(curveDTO.getCurveId());
         curvePoint.setTerm(curveDTO.getTerm());
         curvePoint.setValue(curveDTO.getValue());
+        curvePoint.setCreationDate(LocalDateTime.now());
 
         try {
            CurvePoint saveCurve = curvePointRepository.save(curvePoint);
@@ -86,6 +125,16 @@ public class CurveService {
 
     }
 
+    /**
+     * Updates an existing curve point based on its ID and a {@link CurveDTO}.
+     *
+     * @param id       the ID of the curve point to update
+     * @param curveDTO the data transfer object containing updated curve point details
+     * @return the updated {@link CurvePoint} entity
+     * @throws IllegalArgumentException  if the {@link CurveDTO} is null
+     * @throws EntityNotFoundException   if no curve point is found with the given ID
+     * @throws EntitySaveException       if updating the curve point fails
+     */
     public CurvePoint updateCurvePoint(int id, CurveDTO curveDTO) {
         log.info("Updating curve point {}", curveDTO);
 
@@ -96,6 +145,7 @@ public class CurveService {
 
         CurvePoint curvePoint=curvePointRepository.findById(id).orElseThrow(()->
                 new EntityNotFoundException("Curve point with ID " + id + " not found"));
+
         curvePoint.setTerm(curveDTO.getTerm());
         curvePoint.setCurveId(curveDTO.getCurveId());
         curvePoint.setValue(curveDTO.getValue());
@@ -110,6 +160,14 @@ public class CurveService {
         }
     }
 
+    /**
+     * Deletes a curve point by its ID.
+     *
+     * @param id the ID of the curve point to delete
+     * @throws IllegalArgumentException   if the ID is invalid
+     * @throws EntityNotFoundException    if no curve point is found with the given ID
+     * @throws EntityDeleteException      if deleting the curve point fails
+     */
     public void deleteCurvePoint(int id) {
         log.info("Deleting curve point {}", id);
 

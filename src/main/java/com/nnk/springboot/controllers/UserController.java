@@ -5,7 +5,6 @@ import com.nnk.springboot.dto.UserDTO;
 import com.nnk.springboot.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +17,25 @@ import java.util.List;
 @Slf4j
 @Controller
 public class UserController {
-    @Autowired
-    private UserService userService;
 
+    private final UserService userService;
+
+    /**
+     * Constructs a new instance of {@link UserController}.
+     *
+     * @param userService the service for managing users
+     */
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * Displays the list of all users.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the user list
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping("/user/list")
     public String home(Model model)
@@ -30,12 +45,31 @@ public class UserController {
         model.addAttribute("users", userDTOs);
         return "user/list";
     }
+
+    /**
+     * Displays the form to add a new user.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the add user form
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/user/add")
     public String addUser(Model model) {
         model.addAttribute("user", new UserDTO());
         return "user/add";
     }
+
+    /**
+     * Validates and saves a new user.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param user               the user data transfer object to save
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/user/validate")
     public String validate(@Valid @ModelAttribute UserDTO user, BindingResult result,
@@ -55,15 +89,34 @@ public class UserController {
             return "user/add";
         }
     }
+
+    /**
+     * Displays the form to update an existing user.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param id    the ID of the user to update
+     * @param model the model to pass attributes to the view
+     * @return the view name for the update user form
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        /*User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        user.setPassword("");*/
         UserDTO userDTO = userService.getUserDTOById(id);
         model.addAttribute("user", userDTO);
         return "user/update";
     }
+
+    /**
+     * Validates and updates an existing user.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param id                 the ID of the user to update
+     * @param user               the user data transfer object with updated details
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/user/update/{id}")
     public String updateUser(@PathVariable("id") Integer id, @Valid @ModelAttribute UserDTO user,
@@ -85,17 +138,15 @@ public class UserController {
 
         }
     }
-        /*if (result.hasErrors()) {
-            return "user/update";
-        }
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setId(id);
-        userRepository.save(user);
-        model.addAttribute("users", userRepository.findAll());
-        return "redirect:/user/list";*/
-
+    /**
+     * Deletes a user by its ID.
+     * Accessible only to users with the `ROLE_ADMIN`.
+     *
+     * @param id                 the ID of the user to delete
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the redirect URL for the user list
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {

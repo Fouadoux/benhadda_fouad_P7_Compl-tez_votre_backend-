@@ -17,15 +17,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TradeService {
 
-
     private final TradeRepository tradeRepository;
 
-
+    /**
+     * Constructs a new instance of {@link TradeService}.
+     *
+     * @param tradeRepository the repository for accessing trade data
+     */
     public TradeService(TradeRepository tradeRepository) {
         this.tradeRepository = tradeRepository;
     }
 
-
+    /**
+     * Converts a {@link Trade} entity to a {@link TradeDTO}.
+     *
+     * @param trade the trade entity to convert
+     * @return the converted {@link TradeDTO}
+     */
     public TradeDTO convertToDTO(Trade trade){
         log.info("Converting bid ID {} to DTO",trade.getTradeId());
 
@@ -37,6 +45,12 @@ public class TradeService {
         return dto;
     }
 
+    /**
+     * Converts a list of {@link Trade} entities to a list of {@link TradeDTO}s.
+     *
+     * @param tradeList the list of trade entities to convert
+     * @return the list of converted {@link TradeDTO}s
+     */
     public List<TradeDTO> convertToDTOList (List<Trade> tradeList){
         log.info("Converting list of bid to DTOs");
 
@@ -45,10 +59,23 @@ public class TradeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all trades as a list.
+     *
+     * @return a list of all trades
+     */
     public List<Trade> getListToTradeList(){
         return tradeRepository.findAll();
     }
 
+    /**
+     * Retrieves a {@link TradeDTO} by its ID.
+     *
+     * @param id the ID of the trade to retrieve
+     * @return the retrieved {@link TradeDTO}
+     * @throws IllegalArgumentException  if the ID is invalid
+     * @throws EntityNotFoundException   if no trade is found with the given ID
+     */
     public TradeDTO getTradeDTOById(int id){
         log.info("Fetching trade with ID: {}", id);
 
@@ -63,6 +90,14 @@ public class TradeService {
 
     }
 
+    /**
+     * Saves a new trade based on a {@link TradeDTO}.
+     *
+     * @param tradeDTO the data transfer object containing trade details
+     * @return the saved {@link Trade} entity
+     * @throws IllegalArgumentException  if the {@link TradeDTO} is null
+     * @throws EntitySaveException       if saving the trade fails
+     */
     public Trade saveTrade(TradeDTO tradeDTO) {
         log.info("Adding a new trade to the bid list");
 
@@ -87,6 +122,16 @@ public class TradeService {
 
     }
 
+    /**
+     * Updates an existing trade based on its ID and a {@link TradeDTO}.
+     *
+     * @param id       the ID of the trade to update
+     * @param tradeDTO the data transfer object containing updated trade details
+     * @return the updated {@link Trade} entity
+     * @throws IllegalArgumentException  if the {@link TradeDTO} is null
+     * @throws EntityNotFoundException   if no trade is found with the given ID
+     * @throws EntitySaveException       if updating the trade fails
+     */
     public Trade updateBidList(int id, TradeDTO tradeDTO) {
         log.info("Updating bid with ID: {}", id);
 
@@ -113,6 +158,14 @@ public class TradeService {
         }
     }
 
+    /**
+     * Deletes a trade by its ID.
+     *
+     * @param id the ID of the trade to delete
+     * @throws IllegalArgumentException   if the ID is invalid
+     * @throws EntityNotFoundException    if no trade is found with the given ID
+     * @throws EntityDeleteException      if deleting the trade fails
+     */
     public void deleteTrade(int id) {
         log.info("Delete trade with ID: {}", id);
 

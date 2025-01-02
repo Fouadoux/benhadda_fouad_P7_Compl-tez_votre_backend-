@@ -19,10 +19,21 @@ public class TradeController {
 
     private final TradeService tradeService;
 
+    /**
+     * Constructs a new instance of {@link TradeController}.
+     *
+     * @param tradeService the service for managing trades
+     */
     public TradeController(TradeService tradeService) {
         this.tradeService = tradeService;
     }
 
+    /**
+     * Displays the list of all trades.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the trade list
+     */
     @RequestMapping("/trade/list")
     public String home(Model model)
     {
@@ -32,12 +43,27 @@ public class TradeController {
         return "trade/list";
     }
 
+    /**
+     * Displays the form to add a new trade.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the add trade form
+     */
     @GetMapping("/trade/add")
     public String addUser(Model model) {
         model.addAttribute("trade", new Trade());
         return "trade/add";
     }
 
+    /**
+     * Validates and saves a new trade.
+     *
+     * @param trade              the trade data transfer object to save
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/trade/validate")
     public String validate(@Valid @ModelAttribute TradeDTO trade, BindingResult result,
                            Model model, RedirectAttributes redirectAttributes) {
@@ -57,6 +83,13 @@ public class TradeController {
         }
     }
 
+    /**
+     * Displays the form to update an existing trade.
+     *
+     * @param id    the ID of the trade to update
+     * @param model the model to pass attributes to the view
+     * @return the view name for the update trade form
+     */
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         TradeDTO tradeDTO = tradeService.getTradeDTOById(id);
@@ -64,6 +97,16 @@ public class TradeController {
         return "trade/update";
     }
 
+    /**
+     * Validates and updates an existing trade.
+     *
+     * @param id                 the ID of the trade to update
+     * @param trade              the trade data transfer object with updated details
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/trade/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Valid @ModelAttribute TradeDTO trade,
                              BindingResult result, Model model, RedirectAttributes redirectAttributes) {
@@ -89,6 +132,13 @@ public class TradeController {
         }
     }
 
+    /**
+     * Deletes a trade by its ID.
+     *
+     * @param id                 the ID of the trade to delete
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the redirect URL for the trade list
+     */
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         tradeService.deleteTrade(id);

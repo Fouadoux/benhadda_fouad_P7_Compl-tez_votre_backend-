@@ -1,13 +1,10 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.RuleName;
-import com.nnk.springboot.dto.BidDTO;
 import com.nnk.springboot.dto.RuleNameDTO;
 import com.nnk.springboot.exception.EntityDeleteException;
 import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
-import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -266,7 +263,7 @@ class RuleNameServiceTest {
         when(ruleNameRepository.existsById(id)).thenReturn(true);
 
         // WHEN
-        ruleNameService.delteRuleNameById(id);
+        ruleNameService.deleteRuleNameById(id);
 
         // THEN
         verify(ruleNameRepository).existsById(id);
@@ -283,7 +280,7 @@ class RuleNameServiceTest {
 
         // WHEN + THEN
         assertThrows(EntityNotFoundException.class, () -> {
-            ruleNameService.delteRuleNameById(id);
+            ruleNameService.deleteRuleNameById(id);
         });
 
         // Vérifier que deleteById n'a pas été appelé
@@ -302,7 +299,7 @@ class RuleNameServiceTest {
 
         // WHEN + THEN
         assertThrows(EntityDeleteException.class, () -> {
-            ruleNameService.delteRuleNameById(id);
+            ruleNameService.deleteRuleNameById(id);
         });
 
         verify(ruleNameRepository).deleteById(id);
@@ -315,7 +312,7 @@ class RuleNameServiceTest {
 
         // WHEN + THEN
         assertThrows(IllegalArgumentException.class, () -> {
-            ruleNameService.delteRuleNameById(invalidId);
+            ruleNameService.deleteRuleNameById(invalidId);
         });
 
         // Vérifier que le repository n'est jamais appelé

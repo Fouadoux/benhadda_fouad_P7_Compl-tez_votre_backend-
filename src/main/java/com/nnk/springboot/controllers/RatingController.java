@@ -17,34 +17,57 @@ import java.util.List;
 @Slf4j
 @Controller
 public class RatingController {
-    // TODO: Inject Rating service
 
     private final RatingService ratingService;
 
+    /**
+     * Constructs a new instance of {@link RatingController}.
+     *
+     * @param ratingService the service for managing ratings
+     */
     public RatingController(RatingService ratingService) {
         this.ratingService = ratingService;
     }
 
+    /**
+     * Displays the list of all ratings.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the rating list
+     */
     @RequestMapping("/rating/list")
     public String home(Model model)
     {
-        // TODO: find all Rating, add to model
         List<Rating> ratings = ratingService.getAllRatings();
         List<RatingDTO> ratingDTOList = ratingService.convertToDTOList(ratings);
         model.addAttribute("ratings", ratingDTOList);
         return "rating/list";
     }
 
+    /**
+     * Displays the form to add a new rating.
+     *
+     * @param model the model to pass attributes to the view
+     * @return the view name for the add rating form
+     */
     @GetMapping("/rating/add")
     public String addRatingForm(Model model) {
         model.addAttribute("rating", new Rating());
         return "rating/add";
     }
 
+    /**
+     * Validates and saves a new rating.
+     *
+     * @param rating             the rating data transfer object to save
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/rating/validate")
     public String validate(@Valid @ModelAttribute("rating") RatingDTO rating, BindingResult result,
                            Model model, RedirectAttributes redirectAttributes) {
-        // TODO: check data valid and save to db, after saving return Rating list
         log.info("validating rating {}", rating);
 
         if (result.hasErrors()) {
@@ -67,14 +90,30 @@ public class RatingController {
 
     }
 
+    /**
+     * Displays the form to update an existing rating.
+     *
+     * @param id    the ID of the rating to update
+     * @param model the model to pass attributes to the view
+     * @return the view name for the update rating form
+     */
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Rating by Id and to model then show to the form
         RatingDTO ratingDTO = ratingService.getRatingDTOById(id);
         model.addAttribute("rating", ratingDTO);
         return "rating/update";
     }
 
+    /**
+     * Validates and updates an existing rating.
+     *
+     * @param id                 the ID of the rating to update
+     * @param rating             the rating data transfer object with updated details
+     * @param result             the binding result for validation errors
+     * @param model              the model to pass attributes to the view
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the view name or redirect URL
+     */
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Valid @ModelAttribute RatingDTO rating,
                              BindingResult result, Model model, RedirectAttributes redirectAttributes) {
@@ -101,6 +140,13 @@ public class RatingController {
         }
     }
 
+    /**
+     * Deletes a rating by its ID.
+     *
+     * @param id                 the ID of the rating to delete
+     * @param redirectAttributes the attributes to pass on redirection
+     * @return the redirect URL for the rating list
+     */
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
 

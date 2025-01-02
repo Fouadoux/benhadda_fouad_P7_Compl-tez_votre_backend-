@@ -18,9 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class User implements UserDetails {
 
-    /*@Transient
-    private Collection<? extends GrantedAuthority> authorities;*/
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Correspond à AUTO_INCREMENT dans MySQL
     private int id;
@@ -37,7 +34,7 @@ public class User implements UserDetails {
     @Column(name = "role", length = 125)
     private String role;
 
-    private String githubId; // ID unique de GitHub
+    private String githubId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

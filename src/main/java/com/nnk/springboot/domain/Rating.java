@@ -16,7 +16,7 @@ public class Rating {
     @Column(name = "Id", nullable = false)
     private int id;
 
-    @Column(name = "moodysRating", length = 125)
+    @Column(name = "moodys_Rating", length = 125)
     private String moodysRating;
 
     @Column(name = "sandPRating", length = 125)

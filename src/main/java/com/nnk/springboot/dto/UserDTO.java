@@ -21,5 +21,5 @@ public class UserDTO {
     @NotBlank(message = "Role is mandatory")
     private String role;
 
-    private String githubId; // ID unique de GitHub
+    private String githubId;
 }
