@@ -102,6 +102,11 @@ public class RatingService {
     public Rating saveRating(RatingDTO ratingDTO) {
         log.info("Adding a new bid to the bid list");
 
+        if (ratingDTO==null) {
+            log.error("Rate is null, cannot save.");
+            throw new IllegalArgumentException("Rate cannot be null.");
+        }
+
         Rating rating = new Rating();
 
         rating.setMoodysRating(ratingDTO.getMoodysRating());

@@ -29,9 +29,8 @@ class RuleNameServiceTest {
     @InjectMocks
     private RuleNameService ruleNameService;
 
-
     @Test
-    void testGetAllBidList() {
+    void shouldReturnAllRuleNames_WhenGetAllRuleNameCalled() {
         //Arrange
         RuleName r1 = new RuleName();
         r1.setName("test1");
@@ -49,17 +48,17 @@ class RuleNameServiceTest {
         r2.setSqlPart("SqlPart");
         r2.setSqlStr("sqlStr");
 
-        when(ruleNameRepository.findAll()).thenReturn(List.of(r1,r2));
+        when(ruleNameRepository.findAll()).thenReturn(List.of(r1, r2));
         //ACT
 
-        List<RuleName> ruleNames= ruleNameService.getAllRuleName();
+        List<RuleName> ruleNames = ruleNameService.getAllRuleName();
 
         //Assert
         assertNotNull(ruleNames);
     }
 
     @Test
-    void testConvertToDto() {
+    void shouldConvertRuleNameToRuleNameDTO_WhenConvertToDtoCalled() {
         RuleName r1 = new RuleName();
         r1.setName("test1");
         r1.setDescription("description");
@@ -81,7 +80,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testConvertToDTOList(){
+    void shouldConvertListOfRuleNamesToListOfRuleNameDTOs_WhenConvertToDTOListCalled() {
         RuleName r1 = new RuleName();
         r1.setName("test1");
         r1.setDescription("description");
@@ -98,7 +97,7 @@ class RuleNameServiceTest {
         r2.setSqlPart("SqlPart");
         r2.setSqlStr("sqlStr");
 
-        List<RuleNameDTO> ruleNameDTOS = ruleNameService.convertToDTOList(List.of(r1,r2));
+        List<RuleNameDTO> ruleNameDTOS = ruleNameService.convertToDTOList(List.of(r1, r2));
 
         assertNotNull(ruleNameDTOS);
         assertEquals(2, ruleNameDTOS.size());
@@ -108,7 +107,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testSaveRuleName_Successfully() {
+    void shouldSaveRuleNameSuccessfully_WhenValidRuleNameDTOProvided() {
 
         RuleNameDTO ruleNameDTO = new RuleNameDTO();
         ruleNameDTO.setName("test1");
@@ -142,7 +141,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testSaveRuleName_ThrowsEntitySaveException() {
+    void shouldThrowEntitySaveException_WhenSaveRuleNameFails() {
         // GIVEN
         RuleNameDTO ruleNameDTO = new RuleNameDTO();
         ruleNameDTO.setName("test1");
@@ -153,7 +152,8 @@ class RuleNameServiceTest {
         ruleNameDTO.setSql("sqlStr");
 
         // Simuler une exception lors de la sauvegarde
-        doThrow(new DataAccessException("DB error") {}).when(ruleNameRepository).save(any(RuleName.class));
+        doThrow(new DataAccessException("DB error") {
+        }).when(ruleNameRepository).save(any(RuleName.class));
 
         // WHEN + THEN
         EntitySaveException ex = assertThrows(EntitySaveException.class, () -> {
@@ -165,7 +165,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testUpdateRuleName_Success() {
+    void shouldUpdateRuleNameSuccessfully_WhenValidIdAndRuleNameDTOProvided() {
         // GIVEN
         int id = 1;
         RuleNameDTO ruleNameDTO = new RuleNameDTO();
@@ -204,7 +204,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testUpdateRuleName_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentRuleName() {
         // GIVEN
         int id = 999;
         RuleNameDTO dto = new RuleNameDTO();
@@ -222,7 +222,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testUpdateRuleName_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenUpdateRuleNameFailsDueToDataAccessException() {
         // GIVEN
         int id = 1;
         RuleNameDTO ruleNameDTO = new RuleNameDTO();
@@ -242,7 +242,8 @@ class RuleNameServiceTest {
         existingRule.setSqlStr("sqlStr");
 
         when(ruleNameRepository.findById(id)).thenReturn(Optional.of(existingRule));
-        doThrow(new DataAccessException("DB error") {}).when(ruleNameRepository).save(existingRule);
+        doThrow(new DataAccessException("DB error") {
+        }).when(ruleNameRepository).save(existingRule);
 
         // WHEN + THEN
         EntitySaveException ex = assertThrows(EntitySaveException.class, () -> {
@@ -255,7 +256,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testDeleteRuleName_Successfully() {
+    void shouldDeleteRuleNameSuccessfully_WhenValidIdProvided() {
         // GIVEN
         int id = 1;
 
@@ -271,7 +272,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testDeleteRuleName_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentRuleName() {
         // GIVEN
         int id = 999;
 
@@ -288,13 +289,14 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testDeleteRuleName_DataAccessException() {
+    void shouldThrowEntityDeleteException_WhenDeleteRuleNameFailsDueToDataAccessException() {
         // GIVEN
         int id = 2;
         when(ruleNameRepository.existsById(id)).thenReturn(true);
 
         // Simuler une exception au moment de la suppression
-        doThrow(new DataAccessException("DB error") {})
+        doThrow(new DataAccessException("DB error") {
+        })
                 .when(ruleNameRepository).deleteById(id);
 
         // WHEN + THEN
@@ -306,7 +308,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testDeleteRuleName_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDeleteRuleName() {
         // GIVEN
         int invalidId = 0;
 
@@ -321,7 +323,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testGetRuleNameDTOById_Success() {
+    void shouldReturnRuleNameDTO_WhenValidIdProvided() {
         // GIVEN
         int validId = 1;
         RuleName mockRuleName = new RuleName();
@@ -349,7 +351,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testGetRuleNameDTOById_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentRuleNameDTOById() {
         // GIVEN
         int nonExistentId = 999;
         when(ruleNameRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -362,7 +364,7 @@ class RuleNameServiceTest {
     }
 
     @Test
-    void testGetRoleNameDTOById_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetRuleNameDTO() {
         // GIVEN
         int invalidId = 0; // ou -1
 

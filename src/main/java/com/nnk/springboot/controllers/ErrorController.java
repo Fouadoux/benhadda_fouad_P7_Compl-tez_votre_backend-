@@ -13,7 +13,7 @@ public class ErrorController {
      */
     @GetMapping("/403")
     public String error403() {
-        return "403"; // Nom de la vue (ex. 403.html dans un template Thymeleaf)
+        return "403";
     }
 
 }

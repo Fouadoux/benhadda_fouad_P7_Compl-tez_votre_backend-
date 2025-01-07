@@ -30,7 +30,7 @@ class CurveServiceTest {
 
 
     @Test
-    void testGetAllCurvePoints() {
+    void shouldReturnAllCurvePoints_WhenGetAllCurvePointsCalled() {
         //Arrange
         CurvePoint curve = new CurvePoint();
         curve.setCurveId(1);
@@ -50,7 +50,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testConvertToDTO(){
+    void shouldConvertCurvePointToCurveDTO_WhenConvertToDTOCalled(){
         CurvePoint curvePoint = new CurvePoint();
         curvePoint.setCurveId(1);
         curvePoint.setId(1L);
@@ -68,7 +68,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testConvertToDTOList(){
+    void shouldConvertListOfCurvePointsToListOfCurveDTOs_WhenConvertToDTOListCalled(){
         CurvePoint curve1 = new CurvePoint();
         curve1.setCurveId(1);
         curve1.setId(1L);
@@ -89,7 +89,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testSaveCurvePoint_Successfully(){
+    void shouldSaveCurvePointSuccessfully_WhenValidCurveDTOProvided(){
 
         CurveDTO curveDTO = new CurveDTO();
         curveDTO.setId(1);
@@ -114,7 +114,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testSaveCurvePoint_Exception(){
+    void shouldThrowEntitySaveException_WhenSaveCurvePointFails(){
         CurveDTO curveDTO = new CurveDTO();
         curveDTO.setId(1);
         curveDTO.setCurveId(1);
@@ -131,7 +131,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testUpdateCurvePoint_Successfully(){
+    void shouldUpdateCurvePointSuccessfully_WhenValidCurveDTOProvided(){
         CurveDTO curveDTO = new CurveDTO();
         curveDTO.setId(1);
         curveDTO.setCurveId(1);
@@ -162,7 +162,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testUpdateCurvePoint_NotFound(){
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentCurvePoint(){
         int id=100;
         CurveDTO curveDTO = new CurveDTO();
         //...
@@ -178,7 +178,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testUpdateCurvePoint_DataAccessException(){
+    void shouldThrowEntitySaveException_WhenUpdateCurvePointFailsDueToDataAccessException(){
 
         CurveDTO curveDTO = new CurveDTO();
         curveDTO.setId(1);
@@ -201,7 +201,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testDeleteCurvePoint_Successfully(){
+    void shouldDeleteCurvePointSuccessfully_WhenValidIdProvided(){
         when(curvePointRepository.existsById(1)).thenReturn(true);
 
         curveService.deleteCurvePoint(1);
@@ -212,7 +212,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testDeleteCurvePoint_NotFound(){
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentCurvePoint(){
         int id = 999;
         when(curvePointRepository.existsById(id)).thenReturn(false);
 
@@ -222,7 +222,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testDeleteCurvePoint_DataAccessException(){
+    void shouldThrowEntityDeleteException_WhenDeleteCurvePointFailsDueToDataAccessException(){
         int id = 999;
         when(curvePointRepository.existsById(id)).thenReturn(true);
         doThrow(new DataAccessException("DB error") {}).when(curvePointRepository).deleteById(id);
@@ -233,7 +233,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testDeleteCurvePoint_InvalidId(){
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDeleteCurvePoint(){
         int id = 0;
 
         assertThrows(IllegalArgumentException.class, () -> curveService.deleteCurvePoint(id));
@@ -243,7 +243,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testGetCurveDTOById_Successfully(){
+    void shouldReturnCurveDTO_WhenValidIdProvided(){
         CurvePoint curve = new CurvePoint();
         curve.setId(1L);
         curve.setCurveId(1);
@@ -258,7 +258,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testGetCurveDTOById_NotFound(){
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentCurveDTOById(){
         int nonExistentId = 999;
         when(curvePointRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
@@ -270,7 +270,7 @@ class CurveServiceTest {
     }
 
     @Test
-    void testGetCurveDTOById_InvalidId(){
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetCurveDTO(){
 
         int invalidId = 0; // ou -1
 

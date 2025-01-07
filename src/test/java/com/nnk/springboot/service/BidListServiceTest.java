@@ -30,7 +30,7 @@ class BidListServiceTest {
 
 
     @Test
-    void testGetAllBidList() {
+    void shouldReturnAllBidLists_WhenGetAllBidListCalled() {
        //Arrange
         BidList b1 = new BidList();
         b1.setAccount("Account");
@@ -52,7 +52,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testConvertToDto() {
+    void shouldConvertBidListToBidDTO_WhenConvertToDtoCalled() {
         BidList b1 = new BidList();
         b1.setAccount("Account");
         b1.setType("Type");
@@ -67,7 +67,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testConvertToDTOList(){
+    void shouldConvertListOfBidListToListOfBidDTOs_WhenConvertToDTOListCalled(){
         BidList b1 = new BidList();
         b1.setAccount("Account");
         b1.setType("Type");
@@ -91,7 +91,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testSaveBid_Successfully() {
+    void shouldSaveBidListSuccessfully_WhenValidBidDTOProvided() {
 
         BidDTO bidDTO = new BidDTO();
         bidDTO.setAccount("TestAccount");
@@ -115,7 +115,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testSaveBid_ThrowsEntitySaveException() {
+    void shouldThrowEntitySaveException_WhenSaveBidFails() {
         // GIVEN
         BidDTO bidDTO = new BidDTO();
         bidDTO.setAccount("FailAccount");
@@ -134,7 +134,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testUpdateBidList_Success() {
+    void shouldUpdateBidListSuccessfully_WhenValidBidIdAndDTOProvided() {
         // GIVEN
         int bidId = 1;
         BidDTO dto = new BidDTO();
@@ -167,7 +167,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testUpdateBidList_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentBidList() {
         // GIVEN
         int bidId = 999;
         BidDTO dto = new BidDTO();
@@ -185,7 +185,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testUpdateBidList_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenUpdateBidListFailsDueToDataAccessException() {
         // GIVEN
         int bidId = 1;
         BidDTO dto = new BidDTO();
@@ -211,7 +211,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testDeleteBidList_Successfully() {
+    void shouldDeleteBidListSuccessfully_WhenValidBidIdProvided() {
         // GIVEN
         int bidId = 1;
 
@@ -227,7 +227,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testDeleteBidList_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentBidList() {
         // GIVEN
         int bidId = 999;
 
@@ -244,7 +244,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testDeleteBidList_DataAccessException() {
+    void shouldThrowEntityDeleteException_WhenDeleteBidListFailsDueToDataAccessException() {
         // GIVEN
         int bidId = 2;
         when(bidListRepository.existsById(bidId)).thenReturn(true);
@@ -262,7 +262,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testDeleteBidList_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDelete() {
         // GIVEN
         int invalidId = 0;
 
@@ -277,7 +277,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testGetBidDTOById_Success() {
+    void shouldReturnBidDTO_WhenValidIdProvided() {
         // GIVEN
         byte validId = 1;
         BidList mockBidList = new BidList();
@@ -303,7 +303,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testGetBidDTOById_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentBidDTOById() {
         // GIVEN
         int nonExistentId = 999;
         when(bidListRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -316,7 +316,7 @@ class BidListServiceTest {
     }
 
     @Test
-    void testGetBidDTOById_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetBidDTO() {
         // GIVEN
         int invalidId = 0; // ou -1
 

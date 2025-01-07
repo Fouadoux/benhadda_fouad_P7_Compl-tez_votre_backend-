@@ -32,7 +32,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Test
-    void testConvertToDTO() {
+    void shouldConvertUserToUserDTO_WhenConvertToDTOCalled() {
         // GIVEN
         User user = new User();
         user.setId(1);
@@ -54,7 +54,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testConvertToDTO_List() {
+    void shouldConvertListOfUsersToListOfUserDTOs_WhenConvertToDTOListCalled() {
         // GIVEN
         User u1 = new User();
         u1.setId(1);
@@ -95,7 +95,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserDTOById_Success() {
+    void shouldReturnUserDTO_WhenValidIdProvided() {
         // GIVEN
         int validId = 5;
         User mockUser = new User();
@@ -118,7 +118,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserDTOById_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetUserDTO() {
         // GIVEN
         int invalidId = 0;
 
@@ -131,7 +131,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetUserDTOById_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentUserDTOById() {
         // GIVEN
         int nonExistentId = 999;
         when(userRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -145,7 +145,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testGetAllUser() {
+    void shouldReturnAllUsers_WhenGetAllUserCalled() {
         // GIVEN
         User u1 = new User();
         u1.setId(1);
@@ -164,7 +164,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testSaveUser_Success() {
+    void shouldSaveUserSuccessfully_WhenValidUserDTOProvided() {
         // GIVEN
         UserDTO dto = new UserDTO();
         dto.setUsername("newuser");
@@ -196,7 +196,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testSaveUser_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenSaveUserFailsDueToDataAccessException() {
         // GIVEN
         UserDTO dto = new UserDTO();
         dto.setUsername("failuser");
@@ -217,7 +217,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser_Success() {
+    void shouldUpdateUserSuccessfully_WhenValidUserDTOProvided() {
         // GIVEN
         int userId = 10;
         UserDTO dto = new UserDTO();
@@ -252,7 +252,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser_NullUserDTO() {
+    void shouldThrowIllegalArgumentException_WhenNullUserDTOProvidedForUpdate() {
         // GIVEN
         int userId = 1;
         UserDTO dto = null;
@@ -267,7 +267,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentUser() {
         // GIVEN
         int userId = 999;
         UserDTO dto = new UserDTO();
@@ -288,7 +288,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenUpdateUserFailsDueToDataAccessException() {
         // GIVEN
         int userId = 2;
         UserDTO dto = new UserDTO();
@@ -314,7 +314,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_Success() {
+    void shouldDeleteUserSuccessfully_WhenValidIdProvided() {
         // GIVEN
         int userId = 3;
         when(userRepository.existsById(userId)).thenReturn(true);
@@ -328,7 +328,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDeleteUser() {
         // GIVEN
         int invalidId = 0;
 
@@ -342,7 +342,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentUser() {
         // GIVEN
         int userId = 999;
         when(userRepository.existsById(userId)).thenReturn(false);
@@ -357,7 +357,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_DataAccessException() {
+    void shouldThrowEntityDeleteException_WhenDeleteUserFailsDueToDataAccessException() {
         // GIVEN
         int userId = 4;
         when(userRepository.existsById(userId)).thenReturn(true);

@@ -54,7 +54,7 @@ public class SecurityConfig {
 
                 // (2) Configure URL-based authorization
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login","/oauth2/**","/register").permitAll()
+                        .requestMatchers("/login","/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

@@ -32,7 +32,7 @@ class RatingServiceTest {
     RatingService ratingService;
 
     @Test
-    void testGetAllRatings(){
+    void shouldReturnAllRatings_WhenGetAllRatingsCalled(){
 
         Rating r1 = new Rating();
         Rating r2 = new Rating();
@@ -46,7 +46,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testConvertToDTO(){
+    void shouldConvertRatingToRatingDTO_WhenConvertToDTOCalled(){
         Rating r1 = new Rating();
         r1.setId(1);
         r1.setFitchRating("testFitchRating");
@@ -64,7 +64,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testConvertToDTOList(){
+    void shouldConvertListOfRatingsToListOfRatingDTOs_WhenConvertToDTOListCalled(){
         Rating r1 = new Rating();
         r1.setId(1);
         r1.setFitchRating("testFitchRating");
@@ -94,7 +94,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testSaveRating_Successfully(){
+    void shouldSaveRatingSuccessfully_WhenValidRatingDTOProvided(){
         RatingDTO dto = new RatingDTO();
         dto.setFitchRating("testFitchRating");
         dto.setMoodysRating("testMoodysRating");
@@ -119,7 +119,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testSaveRating_ThrowsEntitySaveException(){
+    void shouldThrowEntitySaveException_WhenSaveRatingFails(){
         RatingDTO dto = new RatingDTO();
         dto.setFitchRating("testFitchRating");
         dto.setMoodysRating("testMoodysRating");
@@ -135,7 +135,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testUpdateRating_Successfully(){
+    void shouldUpdateRatingSuccessfully_WhenValidRatingDTOProvided(){
 
         int id=1;
         RatingDTO dto = new RatingDTO();
@@ -169,7 +169,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testUpdateRating_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentRating() {
         // GIVEN
         int bidId = 999;
         RatingDTO dto = new RatingDTO();
@@ -187,7 +187,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testUpdateRating_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenUpdateRatingFailsDueToDataAccessException() {
         // GIVEN
         int id = 1;
         RatingDTO dto = new RatingDTO();
@@ -219,7 +219,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testDeleteRating_Successfully() {
+    void shouldDeleteRatingSuccessfully_WhenValidIdProvided() {
         // GIVEN
         int bidId = 1;
 
@@ -235,7 +235,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testDeleteRating_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentRating() {
         // GIVEN
         int bidId = 999;
 
@@ -252,7 +252,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testDeleteRating_DataAccessException() {
+    void shouldThrowEntityDeleteException_WhenDeleteRatingFailsDueToDataAccessException() {
         // GIVEN
         int bidId = 2;
         when(ratingRepository.existsById(bidId)).thenReturn(true);
@@ -270,7 +270,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testDeleteRatingList_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDeleteRating() {
         // GIVEN
         int invalidId = 0;
 
@@ -285,7 +285,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testGetRatingDTOById_Success() {
+    void shouldReturnRatingDTO_WhenValidIdProvided() {
         // GIVEN
         int id = 1;
         Rating rating = new Rating();
@@ -311,7 +311,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testGetRatingDTOById_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentRatingDTOById() {
         // GIVEN
         int nonExistentId = 999;
         when(ratingRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -324,7 +324,7 @@ class RatingServiceTest {
     }
 
     @Test
-    void testGetRatingDTOById_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetRatingDTO() {
         // GIVEN
         int invalidId = 0; // ou -1
 

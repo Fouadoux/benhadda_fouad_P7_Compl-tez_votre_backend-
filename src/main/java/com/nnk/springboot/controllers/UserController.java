@@ -72,7 +72,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/user/validate")
-    public String validate(@Valid @ModelAttribute UserDTO user, BindingResult result,
+    public String validate(@Valid @ModelAttribute("user") UserDTO user, BindingResult result,
                            Model model, RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()){

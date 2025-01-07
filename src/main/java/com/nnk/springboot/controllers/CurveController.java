@@ -38,11 +38,9 @@ public class CurveController {
     @RequestMapping("/curvePoint/list")
     public String home(Model model)
     {
-        // TODO: find all Curve Point, add to model
         List<CurvePoint> curvePointList=curveService.getAllCurvePoint();
         List<CurveDTO> curveDTOList=curveService.convertToDtoList(curvePointList);
         model.addAttribute("curvePoints",curveDTOList);
-
 
         return "curvePoint/list";
     }
@@ -98,7 +96,6 @@ public class CurveController {
      */
     @GetMapping("/curvePoint/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get CurvePoint by Id and to model then show to the form
         CurveDTO curveDTO=curveService.getCurveDTOById(id);
         model.addAttribute("curvePoint", curveDTO);
         return "curvePoint/update";
@@ -117,7 +114,6 @@ public class CurveController {
     @PostMapping("/curvePoint/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid @ModelAttribute("curvePoint") CurveDTO curvePoint,
                              BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-        // TODO: check required fields, if valid call service to update Curve and return Curve list
         log.info("update curve point with id " + id);
 
         if (result.hasErrors()) {

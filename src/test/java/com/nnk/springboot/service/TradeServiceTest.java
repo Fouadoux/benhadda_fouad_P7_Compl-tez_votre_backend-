@@ -28,7 +28,7 @@ class TradeServiceTest {
     private TradeService tradeService;
 
     @Test
-    void testGetListToTradeList() {
+    void shouldReturnAllTrades_WhenGetListToTradeListCalled() {
         // GIVEN
         Trade t1 = new Trade();
         t1.setTradeId(1);
@@ -54,7 +54,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testConvertToDTO() {
+    void shouldConvertTradeToTradeDTO_WhenConvertToDTOCalled() {
         // GIVEN
         Trade trade = new Trade();
         trade.setTradeId(10);
@@ -74,7 +74,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testConvertToDTOList() {
+    void shouldConvertListOfTradesToListOfTradeDTOs_WhenConvertToDTOListCalled() {
         // GIVEN
         Trade t1 = new Trade();
         t1.setTradeId(1);
@@ -110,7 +110,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testGetTradeDTOById_Success() {
+    void shouldReturnTradeDTO_WhenValidIdProvided() {
         // GIVEN
         int existingId = 5;
         Trade mockTrade = new Trade();
@@ -134,7 +134,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testGetTradeDTOById_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForGetTradeDTO() {
         // GIVEN
         int invalidId = 0;
 
@@ -147,7 +147,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testGetTradeDTOById_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenGettingNonexistentTradeDTOById() {
         // GIVEN
         int nonExistentId = 999;
         when(tradeRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -160,7 +160,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testSaveTrade_Success() {
+    void shouldSaveTradeSuccessfully_WhenValidTradeDTOProvided() {
         // GIVEN
         TradeDTO tradeDTO = new TradeDTO();
         tradeDTO.setAccount("TestAccount");
@@ -183,7 +183,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testSaveTrade_NullTradeDTO() {
+    void shouldThrowIllegalArgumentException_WhenNullTradeDTOProvidedForSave() {
         // GIVEN
         TradeDTO tradeDTO = null;
 
@@ -196,7 +196,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testSaveTrade_ThrowsEntitySaveException() {
+    void shouldThrowEntitySaveException_WhenSaveTradeFails() {
         // GIVEN
         TradeDTO tradeDTO = new TradeDTO();
         tradeDTO.setAccount("FailAccount");
@@ -215,7 +215,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testUpdateTrade_Success() {
+    void shouldUpdateTradeSuccessfully_WhenValidTradeDTOProvided() {
         // GIVEN
         int tradeId = 10;
         TradeDTO tradeDTO = new TradeDTO();
@@ -245,7 +245,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testUpdateTrade_NullTradeDTO() {
+    void shouldThrowIllegalArgumentException_WhenNullTradeDTOProvidedForUpdate() {
         // GIVEN
         int tradeId = 1;
         TradeDTO tradeDTO = null;
@@ -260,7 +260,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testUpdateTrade_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenUpdatingNonexistentTrade() {
         // GIVEN
         int tradeId = 999;
         TradeDTO tradeDTO = new TradeDTO();
@@ -279,7 +279,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testUpdateTrade_DataAccessException() {
+    void shouldThrowEntitySaveException_WhenUpdateTradeFailsDueToDataAccessException() {
         // GIVEN
         int tradeId = 2;
         TradeDTO dto = new TradeDTO();
@@ -307,7 +307,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testDeleteTrade_Success() {
+    void shouldDeleteTradeSuccessfully_WhenValidIdProvided() {
         // GIVEN
         int tradeId = 2;
         when(tradeRepository.existsById(tradeId)).thenReturn(true);
@@ -321,7 +321,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testDeleteTrade_InvalidId() {
+    void shouldThrowIllegalArgumentException_WhenInvalidIdProvidedForDelete() {
         // GIVEN
         int invalidId = 0;
 
@@ -335,7 +335,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testDeleteTrade_NotFound() {
+    void shouldThrowEntityNotFoundException_WhenDeletingNonexistentTrade() {
         // GIVEN
         int tradeId = 999;
         when(tradeRepository.existsById(tradeId)).thenReturn(false);
@@ -349,7 +349,7 @@ class TradeServiceTest {
     }
 
     @Test
-    void testDeleteTrade_DataAccessException() {
+    void shouldThrowEntityDeleteException_WhenDeleteTradeFailsDueToDataAccessException() {
         // GIVEN
         int tradeId = 3;
         when(tradeRepository.existsById(tradeId)).thenReturn(true);
