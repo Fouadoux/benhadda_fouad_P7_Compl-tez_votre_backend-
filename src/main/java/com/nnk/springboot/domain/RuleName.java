@@ -16,22 +16,22 @@ public class RuleName {
     @Column(name = "Id", nullable = false)
     private int id;
 
-    @Column(name = "name", length = 125)
+    @Column(name = "name",  nullable = false, length = 125)
     private String name;
 
-    @Column(name = "description", length = 125)
+    @Column(name = "description",  nullable = false, length = 125)
     private String description;
 
-    @Column(name = "json", length = 125)
+    @Column(name = "json",  nullable = false, length = 125)
     private String json;
 
-    @Column(name = "template", length = 512)
+    @Column(name = "template",  nullable = false, length = 512)
     private String template;
 
-    @Column(name = "sqlStr", length = 125)
+    @Column(name = "sqlStr",  nullable = false, length = 125)
     private String sqlStr;
 
-    @Column(name = "sqlPart", length = 125)
+    @Column(name = "sqlPart",  nullable = false, length = 125)
     private String sqlPart;
 
 }

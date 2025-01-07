@@ -7,12 +7,10 @@ import com.nnk.springboot.exception.EntityNotFoundException;
 import com.nnk.springboot.exception.EntitySaveException;
 import com.nnk.springboot.repositories.BidListRepository;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,15 +18,25 @@ import java.util.stream.Collectors;
 @Service
 public class BidListService {
 
-    private BidListRepository bidListRepository;
+    private final BidListRepository bidListRepository;
 
-
+    /**
+     * Constructs a new instance of {@link BidListService}.
+     *
+     * @param bidListRepository the repository for accessing bid list data
+     */
     public BidListService(BidListRepository bidListRepository) {
         this.bidListRepository = bidListRepository;
     }
 
+    /**
+     * Converts a {@link BidList} entity to a {@link BidDTO}.
+     *
+     * @param bidList the bid list entity to convert
+     * @return the converted {@link BidDTO}
+     */
     public BidDTO convertToDTO(BidList bidList){
-         log.info("Converting bid ID {} to DTO",bidList.getBid());
+         log.info("Converting bid  to DTO");
 
          BidDTO dto=new BidDTO();
          dto.setId(bidList.getId());
@@ -39,6 +47,12 @@ public class BidListService {
          return dto;
     }
 
+    /**
+     * Converts a list of {@link BidList} entities to a list of {@link BidDTO}s.
+     *
+     * @param bidLists the list of bid list entities to convert
+     * @return the list of converted {@link BidDTO}s
+     */
     public List<BidDTO> convertToDTOList (List<BidList> bidLists){
         log.info("Converting list of bid to DTOs");
 
@@ -47,63 +61,120 @@ public class BidListService {
                 .collect(Collectors.toList());
     }
 
-    public List<BidList> getListToBigList(){
+    /**
+     * Retrieves all bid lists as a list.
+     *
+     * @return a list of all {@link BidList} entities
+     */
+    public List<BidList> getAllBidList(){
         return bidListRepository.findAll();
     }
 
-    public void addBidList(BidDTO bidDTO) {
-        log.info("Adding a new bid to the bid list");
+    /**
+     * Retrieves a {@link BidDTO} by its ID.
+     *
+     * @param id the ID of the bid list to retrieve
+     * @return the retrieved {@link BidDTO}
+     * @throws IllegalArgumentException  if the ID is invalid
+     * @throws EntityNotFoundException   if no bid list is found with the given ID
+     */
+    public BidDTO getBidDTOById(int id) {
+        log.info("Fetching BidDTO with ID: {}", id);
 
-        validateBidDTO(bidDTO);
-
-
-        BidList bidList = new BidList();
-
-        bidList.setAccount(bidDTO.getAccount());
-        bidList.setType(bidDTO.getType());
-        bidList.setBidQuantity(bidDTO.getBidQuantity());
-
-        try {
-            bidListRepository.save(bidList);
-            log.info("BidList added successfully");
-        } catch (EntitySaveException e) {
-            log.error("Failed to save bid", e);
-            throw new EntitySaveException("Failed to create user.");
+        if (id <= 0) {
+            log.error("Invalid ID.");
+            throw new IllegalArgumentException("ID must be a positive integer.");
         }
 
-    }
-
-    public BidDTO getBidbyID(int id){
         BidList bidList = bidListRepository.findById(id)
                 .orElseThrow(() ->
-                    new EntityNotFoundException("Default role 'USER' not found"));
-        return convertToDTO(bidList);
+                        new EntityNotFoundException("Bid list with id " + id + " not found")
+                );
 
+        return convertToDTO(bidList);
     }
 
-    public void updateBidList(int id, BidDTO bidDTO) {
-        log.info("Updating bid with ID: {}", id);
+    /**
+     * Saves a new bid list based on a {@link BidDTO}.
+     *
+     * @param bidDTO the data transfer object containing bid list details
+     * @return the saved {@link BidList} entity
+     * @throws IllegalArgumentException  if the {@link BidDTO} is null
+     * @throws EntitySaveException       if saving the bid list fails
+     */
+    public BidList saveBidList(BidDTO bidDTO) {
+        log.info("Saving a new Bid into the bid list");
 
-        validateBidDTO(bidDTO);
+        if (bidDTO == null) {
+            log.error("BidDTO is null, cannot save.");
+            throw new IllegalArgumentException("BidDTO cannot be null.");
+        }
 
-        BidList bidList = bidListRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("BidList not found with Id: " + id));
-
+        BidList bidList = new BidList();
         bidList.setAccount(bidDTO.getAccount());
         bidList.setType(bidDTO.getType());
         bidList.setBidQuantity(bidDTO.getBidQuantity());
 
         try {
-            bidListRepository.save(bidList);
-            log.info("BidList with ID {} updated successfully", id);
-        } catch (Exception e) {
+            BidList savedBid = bidListRepository.save(bidList);
+            log.info("BidList added successfully, generated ID = {}", savedBid.getId());
+            return savedBid;
+        } catch (DataAccessException e) {
+            log.error("Failed to save bid", e);
+            throw new EntitySaveException("Failed to create bid.",e);
+        }
+    }
+
+    /**
+     * Updates an existing bid list based on its ID and a {@link BidDTO}.
+     *
+     * @param id     the ID of the bid list to update
+     * @param bidDTO the data transfer object containing updated bid list details
+     * @return the updated {@link BidList} entity
+     * @throws IllegalArgumentException  if the {@link BidDTO} is null
+     * @throws EntityNotFoundException   if no bid list is found with the given ID
+     * @throws EntitySaveException       if updating the bid list fails
+     */
+    public BidList updateBidList(int id, BidDTO bidDTO) {
+        log.info("Updating bid with ID: {}", id);
+
+        if (bidDTO == null) {
+            log.error("BidDTO is null, cannot update.");
+            throw new IllegalArgumentException("BidDTO cannot be null.");
+        }
+
+        BidList existingBidList = bidListRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("BidList not found with Id: " +id));
+
+        existingBidList.setAccount(bidDTO.getAccount());
+        existingBidList.setType(bidDTO.getType());
+        existingBidList.setBidQuantity(bidDTO.getBidQuantity());
+
+        try {
+            BidList savedBidList = bidListRepository.save(existingBidList);
+            log.info("BidList with ID {} updated successfully", savedBidList.getId());
+            return savedBidList;
+        } catch (DataAccessException e) {
             log.error("Failed to update BidList with ID {}", id, e);
             throw new EntitySaveException("Failed to update bid with ID " + id, e);
         }
     }
 
+    /**
+     * Deletes a bid list by its ID.
+     *
+     * @param id the ID of the bid list to delete
+     * @throws IllegalArgumentException   if the ID is invalid
+     * @throws EntityNotFoundException    if no bid list is found with the given ID
+     * @throws EntityDeleteException      if deleting the bid list fails
+     */
     public void deleteBidList(int id) {
-        log.info("Delete bid with ID: {}", id);
+        log.info("Deleting bid with ID: {}", id);
+
+        if (id <= 0) {
+            log.error("Invalid ID: {}", id);
+            throw new IllegalArgumentException("ID must be a positive integer.");
+        }
 
         if (!bidListRepository.existsById(id)) {
             log.error("BidList with ID {} not found", id);
@@ -113,25 +184,9 @@ public class BidListService {
         try {
             bidListRepository.deleteById(id);
             log.info("BidList with ID {} deleted successfully", id);
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             log.error("Failed to delete BidList with ID {}", id, e);
             throw new EntityDeleteException("Failed to delete bid with ID " + id, e);
         }
     }
-
-    private void validateBidDTO(BidDTO bidDTO) {
-        if (StringUtils.isBlank(bidDTO.getAccount())) {
-            throw new IllegalArgumentException("Account cannot be null or empty");
-        }
-        if (StringUtils.isBlank(bidDTO.getType())) {
-            throw new IllegalArgumentException("Type cannot be null or empty");
-        }
-        if (bidDTO.getBidQuantity() == null || bidDTO.getBidQuantity() < 0) {
-            throw new IllegalArgumentException("Bid quantity must be positive and non-null");
-        }
-    }
-
-
-
-
 }

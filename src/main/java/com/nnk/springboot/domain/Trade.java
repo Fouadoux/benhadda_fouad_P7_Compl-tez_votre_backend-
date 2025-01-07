@@ -13,7 +13,7 @@ public class Trade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TradeId", nullable = false)
+    @Column(name = "trade_id", nullable = false)
     private int tradeId;
 
     @Column(name = "account", nullable = false, length = 30)
@@ -22,7 +22,7 @@ public class Trade {
     @Column(name = "type", nullable = false, length = 30)
     private String type;
 
-    @Column(name = "buyQuantity")
+    @Column(name = "buy_quantity")
     private Double buyQuantity;
 
     @Column(name = "sellQuantity")

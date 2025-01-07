@@ -10,13 +10,13 @@ public class BidDTO {
 
     private Byte id;
 
-    @NotBlank(message="Account is mandatory")
+    @NotBlank(message = "Account is mandatory")
     private String account;
 
-    @NotBlank(message="Type is mandatory")
+    @NotBlank(message = "Type is mandatory")
     private String type;
 
-    @NotNull(message="Bid quantity is mandatory")
+    @NotNull(message = "Bid quantity is mandatory")
     @Positive(message = "Bid quantity must be positive")
     private Double bidQuantity;
 }

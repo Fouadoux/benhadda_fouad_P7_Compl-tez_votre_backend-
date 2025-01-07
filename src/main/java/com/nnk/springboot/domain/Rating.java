@@ -16,16 +16,16 @@ public class Rating {
     @Column(name = "Id", nullable = false)
     private int id;
 
-    @Column(name = "moodysRating", length = 125)
+    @Column(name = "moodys_Rating", nullable = false, length = 125)
     private String moodysRating;
 
-    @Column(name = "sandPRating", length = 125)
+    @Column(name = "sandprating",  nullable = false, length = 125)
     private String sandPRating;
 
-    @Column(name = "fitchRating", length = 125)
+    @Column(name = "fitch_Rating", nullable = false, length = 125)
     private String fitchRating;
 
-    @Column(name = "orderNumber")
+    @Column(name = "order_Number",  nullable = false)
     private Integer orderNumber;
 
 }
